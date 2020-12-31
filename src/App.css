@@ -56,3 +56,11 @@ h4 {
   width: 600px;
   margin-bottom: 40px;
 }
+
+.allButtons {
+  /* border: solid red; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 50vw;
+}

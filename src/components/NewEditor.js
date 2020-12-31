@@ -28,6 +28,7 @@ class NewEditor extends Component {
   componentDidMount() {
     // Load editor data (raw js object) from local storage
     const rawEditorData = this.getSavedEditorData();
+
     if (rawEditorData !== null) {
       const contentState = convertFromRaw(rawEditorData);
       this.setState({
@@ -36,6 +37,27 @@ class NewEditor extends Component {
     }
   }
 
+  showFile = () => {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var preview = document.getElementById('show-text');
+      var file = document.querySelector('input[type=file]').files[0];
+      var reader = new FileReader();
+
+      var textFile = /text.*/;
+
+      if (file.type.match(textFile)) {
+        reader.onload = function (event) {
+          preview.innerHTML = event.target.result;
+        };
+      } else {
+        preview.innerHTML =
+          "<span class='error'>It doesn't seem to be a text file!</span>";
+      }
+      reader.readAsText(file);
+    } else {
+      alert('Your browser is too old to support HTML5 File API');
+    }
+  };
   saveEditorContent(data) {
     localStorage.setItem('editorData', JSON.stringify(data));
   }
@@ -106,6 +128,25 @@ class NewEditor extends Component {
     element.click();
   };
 
+  uploadFile(event) {
+    let file = event.target.files[0];
+    console.log(file);
+
+    if (file) {
+      let data = new FormData();
+      data.append('file', file);
+      // axios.post('/files', data)...
+    }
+  }
+  onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.setState({ image: e.target.result });
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
   render() {
     return (
       <div className="main">
@@ -124,24 +165,34 @@ class NewEditor extends Component {
             editorState={this.state.editorState}
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}
-            onChangeText={this.onChangeText}
-            value={this.state.editorState}
-            name="editorState"
+            // onChangeText={this.onChangeText}
+            // value={this.state.editorState}
+            // name="editorState"
             // blockRenderMap={blockRenderMap}
           />
         </div>
-        <div>
+        <div className="allButtons">
           {/* <input
             id="myInput"
             value={this.state.value}
             name="text"
             onChangeText={this.onChangeText}
           /> */}
+          {/* <input
+            type="file"
+            onChange={this.onImageChange}
+            className="filetype"
+            id="group_image"
+          /> */}
+
           <button onClick={this.convertToRaw}>Convert to raw</button>
           <button onClick={this.downloadTxtFile}>Save File</button>
-          <button>Reload File</button>
-          <pre>{this.convertToRaw()}</pre>
+          {/* <input type="file" name="myFile" onChange={this.uploadFile} /> */}
         </div>
+
+        <input type="file" onChange={this.showFile} />
+        <div id="show-text">Choose text File To Reload</div>
+        {/* <pre>{JSON.parse(this.uploadFile)}</pre> */}
       </div>
     );
   }

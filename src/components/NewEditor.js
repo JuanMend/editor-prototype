@@ -119,7 +119,7 @@ class NewEditor extends Component {
 
   downloadTxtFile = () => {
     const element = document.createElement('a');
-    const file = new Blob([document.getElementById('myInput').value], {
+    const file = new Blob([document.getElementById('show-text').value], {
       type: 'text/plain',
     });
     element.href = URL.createObjectURL(file);
@@ -191,7 +191,12 @@ class NewEditor extends Component {
         </div>
 
         <input type="file" onChange={this.showFile} />
-        <div id="show-text">Choose text File To Reload</div>
+        <textarea
+          id="show-text"
+          value={this.state.value}
+          name="text"
+          onChangeText={this.onChangeText}
+        ></textarea>
         {/* <pre>{JSON.parse(this.uploadFile)}</pre> */}
       </div>
     );

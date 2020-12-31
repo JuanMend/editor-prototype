@@ -168,35 +168,24 @@ class NewEditor extends Component {
             // onChangeText={this.onChangeText}
             // value={this.state.editorState}
             // name="editorState"
-            // blockRenderMap={blockRenderMap}
           />
         </div>
         <div className="allButtons">
-          {/* <input
-            id="myInput"
+          {/* <button onClick={this.convertToRaw}>Convert to raw</button> */}
+          <button className="saveButton" onClick={this.downloadTxtFile}>
+            Save File
+          </button>
+          <input type="file" onChange={this.showFile} />
+          <textarea
+            id="show-text"
             value={this.state.value}
             name="text"
             onChangeText={this.onChangeText}
-          /> */}
-          {/* <input
-            type="file"
-            onChange={this.onImageChange}
-            className="filetype"
-            id="group_image"
-          /> */}
-
-          <button onClick={this.convertToRaw}>Convert to raw</button>
-          <button onClick={this.downloadTxtFile}>Save File</button>
-          {/* <input type="file" name="myFile" onChange={this.uploadFile} /> */}
+            rows="4"
+            cols="50"
+          ></textarea>
         </div>
 
-        <input type="file" onChange={this.showFile} />
-        <textarea
-          id="show-text"
-          value={this.state.value}
-          name="text"
-          onChangeText={this.onChangeText}
-        ></textarea>
         {/* <pre>{JSON.parse(this.uploadFile)}</pre> */}
       </div>
     );

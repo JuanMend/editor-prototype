@@ -60,7 +60,17 @@ h4 {
 .allButtons {
   /* border: solid red; */
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 50vw;
+  justify-content: start;
+  align-items: start;
+  flex-direction: column;
+  width: 30vw;
+  height: 20vh;
+}
+
+.saveButton {
+  margin-bottom: 20px;
+}
+
+#show-text {
+  margin-top: 20px;
 }

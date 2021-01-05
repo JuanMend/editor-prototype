@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import dataJson from '../db.json';
 import {
   convertToRaw,
   convertFromRaw,
@@ -6,15 +8,6 @@ import {
   Editor,
   RichUtils,
 } from 'draft-js';
-
-// const blockRenderMap = Immutable.Map({
-//   'header-two': {
-//     element: 'h2',
-//   },
-//   unstyled: {
-//     element: 'h2',
-//   },
-// });
 
 class NewEditor extends Component {
   constructor(props) {
@@ -36,6 +29,10 @@ class NewEditor extends Component {
       });
     }
   }
+
+  getDataBtn = () => {
+    axios.get();
+  };
 
   showFile = () => {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -172,6 +169,7 @@ class NewEditor extends Component {
         </div>
         <div className="allButtons">
           {/* <button onClick={this.convertToRaw}>Convert to raw</button> */}
+          {/* <button onClick={this.convertToRaw}>Get Data</button> */}
           <button className="saveButton" onClick={this.downloadTxtFile}>
             Save File
           </button>
@@ -186,10 +184,13 @@ class NewEditor extends Component {
           ></textarea>
         </div>
 
-        {/* <pre>{JSON.parse(this.uploadFile)}</pre> */}
+        {/* <pre>{this.convertToRaw()}</pre> */}
       </div>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {};
+};
 
-export default NewEditor;
+export default connect(mapStateToProps)(NewEditor);

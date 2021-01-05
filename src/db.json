@@ -1,0 +1,40 @@
+{
+  "blocks": [
+    {
+      "key": "1n2dr",
+      "text": "I love Cats and Dogs. What about you?",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [
+        {
+          "offset": 0,
+          "length": 7,
+          "style": "UNDERLINE"
+        },
+        {
+          "offset": 22,
+          "length": 16,
+          "style": "UNDERLINE"
+        },
+        {
+          "offset": 0,
+          "length": 7,
+          "style": "ITALIC"
+        },
+        {
+          "offset": 22,
+          "length": 16,
+          "style": "ITALIC"
+        },
+        {
+          "offset": 7,
+          "length": 13,
+          "style": "BOLD"
+        }
+      ],
+      "entityRanges": [],
+      "data": {}
+    }
+  ],
+  "entityMap": {}
+}

@@ -1,65 +1,51 @@
 import React, { Component } from 'react';
-import { EditorState, convertToRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import { PreviewModal } from './PreviewModal';
+import {
+  Editor,
+  Col,
+  Button,
+  PageHeader,
+  EditorState,
+  ContentState,
+  DraftPasteProcessor,
+} from 'draft-js';
 
 class TextEditor extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editorState: EditorState.createEmpty(),
-      saveContent: [],
-    };
+  constructor(props, context) {
+    super(props, context);
+    this.handleOnClick = this.handleOnClick.bind(this);
+
+    const processedHTML = DraftPasteProcessor.processHTML(
+      this.props.rule.description.replace(/\n/g, '<br />')
+    );
+    const contentState = ContentState.createFromBlockArray(processedHTML);
+    var editorState = EditorState.createWithContent(contentState);
+    var editorState = EditorState.moveFocusToEnd(editorState);
+    this.state = { editorState: editorState };
+    this.onChange = (editorState) => this.setState({ editorState });
   }
 
-  onEditorStateChange = (editorState) => {
-    console.log(editorState);
-    this.setState({
-      editorState,
+  handleOnClick(event) {
+    var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
+    var finalText;
+    text.map((item) => {
+      finalText = item.getText() + finalText;
     });
-  };
-  onChange = (e) => {
-    // console.log(e.target.value);
-    this.setState({ saveContent: e.target.value });
-  };
-  saveTxtContent = (e) => {
-    e.preventDefault();
-    console.log('save Data', this.state.saveContent);
-    this.setState({ saveContent: [] });
-  };
-
+    console.log(finalText);
+  }
   render() {
-    const { editorState } = this.state;
-
     return (
       <div>
-        <form>
+        <Col smOffset={2} mdOffset={1}>
+          <PageHeader>{this.props.rule.title}</PageHeader>
           <Editor
-            editorState={editorState}
-            wrapperClassName="rich-editor demo-wrapper"
-            editorClassName="demo-editor"
-            onEditorStateChange={this.onEditorStateChange}
-            placeholder="The message goes here..."
-            // value={this.state.saveContent}
-            // onChange={this.onChange}
+            editorState={this.state.editorState}
+            onChange={this.onChange}
           />
+        </Col>
 
-          <button onClick={this.saveTxtContent}>Save</button>
-        </form>
-
-        {this.state.saveContent}
-
-        {/* {editorState} */}
-        {/* <h4>Underlying HTML</h4>
-        <div className="html-view">{getHtml(editorState)}</div> */}
-        {/* <button
-          className="btn btn-success"
-          data-toggle="modal"
-          data-target="#previewModal"
-        >
-          Preview message
-        </button> */}
-        {/* <PreviewModal output={getHtml(editorState)} /> */}
+        <Col smOffset={2} mdOffset={1}>
+          <Button onClick={this.handleOnClick()}>Update rule</Button>
+        </Col>
       </div>
     );
   }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { SaveFile } from '../../src/redux/reducer';
+import { stateToHTML } from 'draft-js-export-html';
 import dataJson from '../db.json';
 import {
   convertToRaw,
@@ -13,41 +15,43 @@ class NewEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
       text: '',
+      body: EditorState.createEmpty(),
     };
   }
 
-  componentDidMount() {
-    // Load editor data (raw js object) from local storage
-    const rawEditorData = this.getSavedEditorData();
+  // componentDidMount() {
+  //   // Load editor data (raw js object) from local storage
+  //   const rawEditorData = this.getSavedEditorData();
+  //   // this.props.uploadFile();
 
-    if (rawEditorData !== null) {
-      const contentState = convertFromRaw(rawEditorData);
-      this.setState({
-        editorState: EditorState.createWithContent(contentState),
-      });
-    }
-  }
+  //   if (rawEditorData !== null) {
+  //     const contentState = convertFromRaw(rawEditorData);
+  //     this.setState({
+  //       editorState: EditorState.createWithContent(contentState),
+  //     });
+  //   }
+  // }
 
-  getDataBtn = () => {
-    axios.get();
-  };
-
-  showFile = () => {
+  ReloadTextFile = () => {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-      var preview = document.getElementById('show-text');
+      var preview = JSON.stringify(
+        convertToRaw(this.state.body.getCurrentContent())
+      );
       var file = document.querySelector('input[type=file]').files[0];
+      console.log(file);
       var reader = new FileReader();
 
       var textFile = /text.*/;
 
       if (file.type.match(textFile)) {
         reader.onload = function (event) {
-          preview.innerHTML = event.target.result;
+          console.log(reader);
+          this.props.SaveFile(reader);
+          preview = event.target.result;
         };
       } else {
-        preview.innerHTML =
+        preview =
           "<span class='error'>It doesn't seem to be a text file!</span>";
       }
       reader.readAsText(file);
@@ -65,13 +69,13 @@ class NewEditor extends Component {
     return savedData ? JSON.parse(savedData) : null; // EditorState.createEmpty();
   }
 
-  onChange = (editorState) => {
+  onChange = (editorState, e) => {
     // Convert to raw js object
     const raw = convertToRaw(editorState.getCurrentContent());
     // Save raw js object to local storage
     this.saveEditorContent(raw);
 
-    this.setState({ editorState });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   onChangeText = (e) => {
@@ -84,6 +88,24 @@ class NewEditor extends Component {
     const raw = convertToRaw(contentState);
 
     return JSON.stringify(raw, null, 2);
+  };
+
+  SaveTxtFile = () => {
+    const element = document.createElement('a');
+    const file = new Blob(
+      [JSON.stringify(convertToRaw(this.state.body.getCurrentContent()))],
+      {
+        type: 'text/plain',
+      }
+    );
+    this.props.SaveFile(file);
+    element.href = URL.createObjectURL(file);
+    element.download = 'myFile.txt';
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+  getText = () => {
+    return stateToHTML(this.state.body.getCurrentContent());
   };
 
   handleKeyCommand = (command) => {
@@ -114,37 +136,9 @@ class NewEditor extends Component {
     );
   };
 
-  downloadTxtFile = () => {
-    const element = document.createElement('a');
-    const file = new Blob([document.getElementById('show-text').value], {
-      type: 'text/plain',
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = 'myFile.txt';
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  };
-
-  uploadFile(event) {
-    let file = event.target.files[0];
-    console.log(file);
-
-    if (file) {
-      let data = new FormData();
-      data.append('file', file);
-      // axios.post('/files', data)...
-    }
-  }
-  onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        this.setState({ image: e.target.result });
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  };
   render() {
+    const { text, body } = this.state;
+
     return (
       <div className="main">
         <div className="editorChoice">
@@ -158,33 +152,35 @@ class NewEditor extends Component {
         </div>
         <div className="editorComp">
           <Editor
-            className="editorTxt"
-            editorState={this.state.editorState}
-            onChange={this.onChange}
+            id="show-text"
+            onChange={(value) => this.setState({ body: value })}
+            editorState={body}
             handleKeyCommand={this.handleKeyCommand}
+            // onChange={this.onChange}
             // onChangeText={this.onChangeText}
-            // value={this.state.editorState}
+            // value={this.state.text}
             // name="editorState"
           />
         </div>
         <div className="allButtons">
           {/* <button onClick={this.convertToRaw}>Convert to raw</button> */}
-          {/* <button onClick={this.convertToRaw}>Get Data</button> */}
-          <button className="saveButton" onClick={this.downloadTxtFile}>
+          {/* <button onClick={() => this.props.uploadFile()}>Get Data</button> */}
+          <button className="saveButton" onClick={this.SaveTxtFile}>
             Save File
           </button>
-          <input type="file" onChange={this.showFile} />
-          <textarea
+          <input type="file" onChange={this.ReloadTextFile} />
+          {/* <textarea
             id="show-text"
             value={this.state.value}
             name="text"
             onChangeText={this.onChangeText}
             rows="4"
             cols="50"
-          ></textarea>
+          ></textarea> */}
         </div>
 
         {/* <pre>{this.convertToRaw()}</pre> */}
+        {/* <div dangerouslySetInnerHTML={{ __html: this.getText() }}></div> */}
       </div>
     );
   }
@@ -193,4 +189,4 @@ const mapStateToProps = (state) => {
   return {};
 };
 
-export default connect(mapStateToProps)(NewEditor);
+export default connect(mapStateToProps, { SaveFile })(NewEditor);

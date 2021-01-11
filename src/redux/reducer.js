@@ -6,7 +6,8 @@ const SAVEFILE = 'SAVEFILE';
 
 export const SaveFile = (fileData) => {
   console.log('Blob For Upload File ', fileData);
-  console.log(fileData.text());
+  // const result = await fileData.text();
+  // console.log(result);
   return {
     type: SAVEFILE,
     payload: '',

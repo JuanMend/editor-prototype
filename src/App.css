@@ -74,3 +74,9 @@ h4 {
 #show-text {
   margin-top: 20px;
 }
+
+.fileReload {
+  border: solid red;
+  width: 800px;
+  height: 90px;
+}

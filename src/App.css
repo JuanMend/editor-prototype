@@ -76,7 +76,13 @@ h4 {
 }
 
 .fileReload {
-  border: solid red;
-  width: 800px;
-  height: 90px;
+  /* border: solid red; */
+  width: 300px;
+  height: 60px;
+}
+
+.display {
+  width: 200px;
+  height: 60px;
+  /* border: solid red; */
 }

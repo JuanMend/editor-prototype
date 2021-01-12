@@ -20,8 +20,17 @@ class NewEditor extends Component {
     this.state = {
       text: '',
       file: '',
-      editorState: EditorState.createEmpty(), // EditorState It is an Immutable Record that represents the entire state of a Draft editor
+      // editorState: EditorState.createEmpty(), // EditorState It is an Immutable Record that represents the entire state of a Draft editor
     };
+    const content = window.localStorage.getItem('content');
+
+    if (content) {
+      this.state.editorState = EditorState.createWithContent(
+        convertFromRaw(JSON.parse(content))
+      );
+    } else {
+      this.state.editorState = EditorState.createEmpty();
+    }
   }
 
   // componentDidMount() {
@@ -38,8 +47,8 @@ class NewEditor extends Component {
   // }
 
   reloadBtnFile = (event) => {
-    console.log(event.target.files);
-    this.setState({ file: event.target.files });
+    let input = this.refs.input_reader;
+    input.click();
   };
 
   ReloadTextFile = () => {
@@ -49,33 +58,51 @@ class NewEditor extends Component {
       // var preview = JSON.stringify(
       //   convertToRaw(editorState.getCurrentContent())
       // );
-      // var preview = document.getElementById('show-text');
 
-      // var file = document.querySelector('input[type=file]').files[0];
-      const formData = new FormData();
+      var file = document.querySelector('input[type=file]').files[0]; // File refrence
+      // const formData = new FormData();
 
-      var file = formData.append('file', this.state.file[0]);
+      // var file = formData.append('file', this.state.file[0]);
 
       var reader = new FileReader(); //lets web applications asynchronously read the contents of files (or raw data buffers) stored on the user's computer
       this.props.SaveFile(reader);
 
       var textFile = /text.*/;
 
-      reader.onload = function (event) {
-        // preview = event.target.result;
-        // console.log(reader.currentContentBlock.getText());
+      if (file.type.match(textFile)) {
+        reader.onload = function (event) {
+          console.log(reader.currentContentBlock.getText());
 
-        // return (
-        //   <p
-        //     style={{ color: 'blue' }}
-        //     dangerouslySetInnerHTML={{ __html: reader }}
-        //   ></p>
-        // );
-        return reader.result;
-      };
-      // if (file.type.match(textFile)) {
-      // }
-      // reader.readAsText(file);
+          return (
+            <p
+              style={{ color: 'blue' }}
+              dangerouslySetInnerHTML={{ __html: reader }}
+            ></p>
+          );
+          return reader.result;
+        };
+      }
+      reader.readAsText(file);
+    }
+  };
+
+  newReload = () => {
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var preview = document.getElementById('show-text');
+
+      var file = document.querySelector('input[type=file]').files[0];
+      var reader = new FileReader();
+
+      var textFile = /text.*/;
+
+      if (file.type.match(textFile)) {
+        reader.onload = function (event) {
+          console.log(reader);
+          preview.innerHTML = reader.result;
+        };
+      }
+      reader.readAsText(file);
     }
   };
 
@@ -89,13 +116,12 @@ class NewEditor extends Component {
     return savedData ? JSON.parse(savedData) : null; // EditorState.createEmpty();
   }
 
-  // saveContent = (content) => {
-  //   window.localStorage.setItem(
-  //     'content',
-  //     JSON.stringify(convertToRaw(content))
-  //   );
-  // };
-
+  saveContent = (content) => {
+    window.localStorage.setItem(
+      'content',
+      JSON.stringify(convertToRaw(content))
+    );
+  };
   onChange = (editorState, e) => {
     // // Convert to raw js object
     // const raw = convertToRaw(editorState.getCurrentContent());
@@ -103,7 +129,7 @@ class NewEditor extends Component {
     // this.saveEditorContent(raw);
 
     const contentState = editorState.getCurrentContent();
-    console.log('content state', convertToRaw(contentState));
+    this.saveContent(contentState);
     this.setState({
       editorState,
     });
@@ -127,16 +153,23 @@ class NewEditor extends Component {
   };
 
   SaveTxtFile = () => {
-    var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
-    var finalText;
-    text.map((item) => {
-      finalText = item.getText();
-    });
+    // var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
+    // var finalText;
+    // text.map((item) => {
+    //   finalText = item.getText();
+    // });
 
     const element = document.createElement('a');
-    const file = new Blob([finalText], {
-      type: 'text/plain',
-    });
+    const file = new Blob(
+      [
+        JSON.stringify(
+          convertToRaw(this.state.editorState.getCurrentContent())
+        ),
+      ],
+      {
+        type: 'text/plain',
+      }
+    );
     console.log(file);
     this.props.SaveFile(file);
     element.href = URL.createObjectURL(file);
@@ -199,16 +232,14 @@ class NewEditor extends Component {
         {/* <textarea id="show-text" onChange={this.onChangeText} name="text" /> */}
         <div className="allButtons">
           {/* <button onClick={this.convertToRaw}>Convert to raw</button> */}
-
           <button className="saveButton" onClick={this.SaveTxtFile}>
             Save File
           </button>
+          <input type="file" onChange={this.newReload} className="fileReload" />
+          <br />
           <button onClick={this.reloadBtnFile}>Reload File</button>
-          <input
-            type="file"
-            onChange={this.ReloadTextFile}
-            className="fileReload"
-          />
+
+          {/* <textarea id="show-text"></textarea> */}
           {/* <textarea
             id="show-text"
             value={this.state.value}

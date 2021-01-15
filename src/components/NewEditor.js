@@ -37,21 +37,8 @@ class NewEditor extends Component {
     // }
   }
 
-  // componentDidMount() {
-  //   // Load editor data (raw js object) from local storage
-  //   const rawEditorData = this.getSavedEditorData();
-  //   // this.props.uploadFile();
-
-  //   if (rawEditorData !== null) {
-  //     const contentState = convertFromRaw(rawEditorData);
-  //     this.setState({
-  //       editorState: EditorState.createWithContent(contentState),
-  //     });
-  //   }
-  // }
-
   setContent = (files) => {
-    var file = document.querySelector('input[type=file]').files[0];
+    let file = document.querySelector('input[type=file]').files[0];
     let reader = new FileReader();
     let content = '';
 
@@ -76,20 +63,9 @@ class NewEditor extends Component {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
       const { editorState } = this.state;
 
-      // var preview = JSON.stringify(
-      //   convertToRaw(editorState.getCurrentContent())
-      // );
-
       var file = document.querySelector('input[type=file]').files[0]; // File refrence
 
       var reader = new FileReader(); //lets web applications asynchronously read the contents of files (or raw data buffers) stored on the user's computer
-
-      // var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
-      // var finalText;
-      // text.map((item) => {
-      //   finalText = item.getText();
-      // });
-      // console.log(finalText);
 
       this.props.SaveFile(reader);
 
@@ -97,21 +73,10 @@ class NewEditor extends Component {
 
       if (file.type.match(textFile)) {
         reader.onload = function (event) {
-          // console.log(reader);
-
-          // return (
-          //   <p
-          //     style={{ color: 'blue' }}
-          //     dangerouslySetInnerHTML={{ __html: reader }}
-          //   ></p>
-          // );
-          // const content = window.localStorage.getItem('content');
           editorState = EditorState.createWithContent(
             convertToRaw(JSON.stringify(reader))
           );
           console.log(editorState);
-
-          // alert('File ' + finalText);
         };
       }
       reader.readAsText(file);
@@ -145,9 +110,6 @@ class NewEditor extends Component {
     this.setState({
       editorState,
     });
-    // this.setState({ [e.target.name]: e.target.value });
-
-    // console.log(e.target.value);
   };
 
   onChangeText = (e) => {

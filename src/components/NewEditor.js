@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SaveFile } from '../../src/redux/reducer';
-import { markdownToDraft } from 'markdown-draft-js';
-import Dropzone from 'react-dropzone';
-import { stateToHTM } from 'draft-js-export-html';
-import DraftPasteProcessor from 'draft-js/lib/DraftPasteProcessor';
-import dataJson from '../db.json';
+import { SaveFile, loadTxtFile } from '../../src/redux/reducer';
 import {
   convertToRaw,
   convertFromRaw,
@@ -21,7 +16,6 @@ class NewEditor extends Component {
     super(props);
 
     this.state = {
-      files: [],
       content: '',
       editorState: EditorState.createEmpty(),
       // editorState: EditorState.createEmpty(), // EditorState It is an Immutable Record that represents the entire state of a Draft editor
@@ -37,7 +31,17 @@ class NewEditor extends Component {
     // }
   }
 
-  setContent = (files) => {
+  newSetContent = () => {
+    let file = document.querySelector('input[type=file]').files[0];
+    // return this.setState({
+    //   editorState: EditorState.createWithContent(
+    //     convertFromRaw(JSON.parse(this.props.loadTxtFile(file)))
+    //   ),
+    // });
+    this.props.loadTxtFile(file);
+  };
+
+  setContent = () => {
     let file = document.querySelector('input[type=file]').files[0];
     let reader = new FileReader();
     let content = '';
@@ -48,7 +52,6 @@ class NewEditor extends Component {
       console.log(`content `, result);
 
       return this.setState({
-        files,
         content,
         editorState: EditorState.createWithContent(
           convertFromRaw(JSON.parse(result))
@@ -211,7 +214,7 @@ class NewEditor extends Component {
           </button>
           <input
             type="file"
-            onChange={this.setContent}
+            onChange={this.newSetContent}
             className="fileReload"
           />
           <br />
@@ -234,7 +237,9 @@ class NewEditor extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    content: state.reducer.content,
+  };
 };
 
-export default connect(mapStateToProps, { SaveFile })(NewEditor);
+export default connect(mapStateToProps, { SaveFile, loadTxtFile })(NewEditor);

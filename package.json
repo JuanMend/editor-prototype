@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
     "axios": "^0.21.1",
+    "cors": "^2.8.5",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
     "draft-js-plugins-editor": "^3.0.0",

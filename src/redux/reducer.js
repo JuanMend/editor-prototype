@@ -2,36 +2,33 @@ import axios from 'axios';
 
 const initialState = {
   content: '',
+  loading: false,
 };
 
 const SAVEFILE = 'SAVEFILE';
 const SETCONTENT = 'SETCONTENT';
+const CONTENT_LOADIING = 'CONTENT_LOADIING';
 
 // action creator
+
+export const loadingContent = () => {
+  return {
+    type: 'CONTENT_LOADIING',
+  };
+};
 export const loadTxtFile = (file) => (dispatch) => {
+  dispatch(loadingContent());
   let reader = new FileReader();
   console.log('Reader Results', reader);
 
   reader.onloadend = () => {
     dispatch({
-      type: SETCONTENT,
+      type: 'SETCONTENT',
       payload: reader.result,
     });
   };
   reader.readAsText(file);
 };
-
-// const loadImage = file => dispatch => {
-//   let reader = new FileReader();
-
-//   reader.onloadend = () => {
-//     dispatch({
-//       type: 'SET_IMAGE_IN_REDUCER',
-//       image: reader.result
-//     });
-//   };
-//   reader.readAsDataURL(file);
-// }
 
 export const SaveFile = (fileData) => {
   console.log('Blob For Upload File ', fileData);
@@ -45,9 +42,11 @@ export const SaveFile = (fileData) => {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case SETCONTENT:
-      console.log('in reducer', action.type);
-      return { ...state, content: action.payload };
+    case 'CONTENT_LOADIING':
+      return { loading: true };
+    case 'SETCONTENT':
+      console.log('in reducer', action.type, action.payload);
+      return { ...state, content: action.payload, loading: false };
     case SAVEFILE:
       return {
         ...state,

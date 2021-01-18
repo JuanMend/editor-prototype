@@ -31,14 +31,24 @@ class NewEditor extends Component {
     // }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.loading && !this.props.loading) {
+      this.newSetContent();
+    }
+  }
   newSetContent = () => {
     let file = document.querySelector('input[type=file]').files[0];
-    // return this.setState({
-    //   editorState: EditorState.createWithContent(
-    //     convertFromRaw(JSON.parse(this.props.loadTxtFile(file)))
-    //   ),
-    // });
     this.props.loadTxtFile(file);
+
+    // let newContent = this.props.content;
+    // console.log(this.props.content);
+    // console.log('hello');
+
+    return this.setState({
+      editorState: EditorState.createWithContent(
+        convertFromRaw(JSON.parse(this.props.content))
+      ),
+    });
   };
 
   setContent = () => {
@@ -59,31 +69,7 @@ class NewEditor extends Component {
       });
     };
 
-    reader.readAsText(file);
-  };
-
-  ReloadTextFile = (e) => {
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-      const { editorState } = this.state;
-
-      var file = document.querySelector('input[type=file]').files[0]; // File refrence
-
-      var reader = new FileReader(); //lets web applications asynchronously read the contents of files (or raw data buffers) stored on the user's computer
-
-      this.props.SaveFile(reader);
-
-      var textFile = /text.*/;
-
-      if (file.type.match(textFile)) {
-        reader.onload = function (event) {
-          editorState = EditorState.createWithContent(
-            convertToRaw(JSON.stringify(reader))
-          );
-          console.log(editorState);
-        };
-      }
-      reader.readAsText(file);
-    }
+    console.log(reader.readAsText(file));
   };
 
   saveEditorContent(data) {
@@ -218,27 +204,16 @@ class NewEditor extends Component {
             className="fileReload"
           />
           <br />
-          {/* <button onClick={this.reloadBtnFile}>Reload File</button> */}
-
-          {/* <textarea id="show-text"></textarea> */}
-          {/* <textarea
-            id="show-text"
-            value={this.state.value}
-            name="text"
-            onChangeText={this.onChangeText}
-            rows="4"
-            cols="50"
-          ></textarea> */}
         </div>
-
-        {/* <pre>{this.convertToRaw()}</pre> */}
+        {/* {JSON.stringify(JSON.parse(this.props.content))} */}
       </div>
     );
   }
 }
 const mapStateToProps = (state) => {
   return {
-    content: state.reducer.content,
+    content: state.content,
+    loading: state.loading,
   };
 };
 

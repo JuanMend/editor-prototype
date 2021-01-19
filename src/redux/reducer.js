@@ -43,9 +43,9 @@ export const SaveFile = (fileData) => {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case 'CONTENT_LOADIING':
-      return { loading: true };
+      return { ...state, loading: true };
     case 'SETCONTENT':
-      console.log('in reducer', action.type, action.payload);
+      // console.log('in reducer', action.type, action.payload);
       return { ...state, content: action.payload, loading: false };
     case SAVEFILE:
       return {

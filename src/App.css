@@ -3,62 +3,35 @@
   background-color: #2a2a2ab5;
   height: 100vh;
 }
-.app .rich-editor {
-  padding: 10rem;
-}
-
-.rich-editor .rdw-editor-main {
-  background-color: #fff;
-}
-
-.rich-editor .DraftEditor-editorContainer {
-  padding: 1rem;
-}
-
-.draft-editor-wrapper {
-  border: 1px solid #ccc;
-}
-
-.html-view {
-  background-color: #fff;
-  color: #000;
-  margin: auto;
-  width: 70%;
-  margin-bottom: 2rem;
-}
 
 h4 {
   color: #fff;
 }
 .main {
-  /* border: solid red; */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* height: 50vh; */
 }
 
-/* .editorTxt {
-} */
 .editorChoice {
   display: flex;
   justify-content: space-around;
   margin-top: 25vh;
   margin-bottom: 20px;
-  /* border: solid red; */
   width: 100px;
 }
 
 .editorComp {
   background-color: lightgray;
-  /* border: solid red; */
   width: 600px;
+  height: 200px;
   margin-bottom: 40px;
+  border: 2px solid black;
+  overflow-y: auto;
 }
 
 .allButtons {
-  /* border: solid red; */
   display: flex;
   justify-content: start;
   align-items: start;
@@ -76,7 +49,6 @@ h4 {
 }
 
 .fileReload {
-  /* border: solid red; */
   width: 300px;
   height: 60px;
 }
@@ -84,5 +56,4 @@ h4 {
 .display {
   width: 200px;
   height: 60px;
-  /* border: solid red; */
 }

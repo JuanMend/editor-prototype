@@ -7,69 +7,30 @@ import {
   EditorState,
   Editor,
   RichUtils,
-  ContentState,
 } from 'draft-js';
-import { compose } from 'redux';
 
 class NewEditor extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      content: '',
       editorState: EditorState.createEmpty(),
-      // editorState: EditorState.createEmpty(), // EditorState It is an Immutable Record that represents the entire state of a Draft editor
     };
-    // const content = window.localStorage.getItem('content');
-
-    // if (content) {
-    //   this.state.editorState = EditorState.createWithContent(
-    //     convertFromRaw(JSON.parse(content))
-    //   );
-    // } else {
-    //   this.state.editorState = EditorState.createEmpty();
-    // }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.loading && !this.props.loading) {
-      this.newSetContent();
+      this.setState({
+        editorState: EditorState.createWithContent(
+          convertFromRaw(JSON.parse(this.props.content))
+        ),
+      });
     }
   }
+
   newSetContent = () => {
     let file = document.querySelector('input[type=file]').files[0];
     this.props.loadTxtFile(file);
-
-    // let newContent = this.props.content;
-    // console.log(this.props.content);
-    // console.log('hello');
-
-    return this.setState({
-      editorState: EditorState.createWithContent(
-        convertFromRaw(JSON.parse(this.props.content))
-      ),
-    });
-  };
-
-  setContent = () => {
-    let file = document.querySelector('input[type=file]').files[0];
-    let reader = new FileReader();
-    let content = '';
-
-    reader.onload = (e) => {
-      let result = reader.result;
-
-      console.log(`content `, result);
-
-      return this.setState({
-        content,
-        editorState: EditorState.createWithContent(
-          convertFromRaw(JSON.parse(result))
-        ),
-      });
-    };
-
-    console.log(reader.readAsText(file));
   };
 
   saveEditorContent(data) {
@@ -79,7 +40,7 @@ class NewEditor extends Component {
   getSavedEditorData() {
     const savedData = localStorage.getItem('editorData');
 
-    return savedData ? JSON.parse(savedData) : null; // EditorState.createEmpty();
+    return savedData ? JSON.parse(savedData) : null;
   }
 
   saveContent = (content) => {
@@ -89,11 +50,6 @@ class NewEditor extends Component {
     );
   };
   onChange = (editorState, e) => {
-    // // Convert to raw js object
-    // const raw = convertToRaw(editorState.getCurrentContent());
-    // // Save raw js object to local storage
-    // this.saveEditorContent(raw);
-
     const contentState = editorState.getCurrentContent();
     this.saveContent(contentState);
     this.setState({
@@ -116,12 +72,6 @@ class NewEditor extends Component {
   };
 
   SaveTxtFile = () => {
-    // var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
-    // var finalText;
-    // text.map((item) => {
-    //   finalText = item.getText();
-    // });
-
     const element = document.createElement('a');
     const file = new Blob(
       [
@@ -170,8 +120,6 @@ class NewEditor extends Component {
   };
 
   render() {
-    const { text, body, editorState } = this.state;
-
     return (
       <div className="main">
         <div className="editorChoice">
@@ -192,9 +140,7 @@ class NewEditor extends Component {
           />
         </div>
 
-        {/* <textarea id="show-text" onChange={this.onChangeText} name="text" /> */}
         <div className="allButtons">
-          {/* <button onClick={this.convertToRaw}>Convert to raw</button> */}
           <button className="saveButton" onClick={this.SaveTxtFile}>
             Save File
           </button>
@@ -205,7 +151,6 @@ class NewEditor extends Component {
           />
           <br />
         </div>
-        {/* {JSON.stringify(JSON.parse(this.props.content))} */}
       </div>
     );
   }

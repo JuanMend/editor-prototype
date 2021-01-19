@@ -33,16 +33,6 @@ class NewEditor extends Component {
     this.props.loadTxtFile(file);
   };
 
-  saveEditorContent(data) {
-    localStorage.setItem('editorData', JSON.stringify(data));
-  }
-
-  getSavedEditorData() {
-    const savedData = localStorage.getItem('editorData');
-
-    return savedData ? JSON.parse(savedData) : null;
-  }
-
   saveContent = (content) => {
     window.localStorage.setItem(
       'content',
@@ -55,20 +45,6 @@ class NewEditor extends Component {
     this.setState({
       editorState,
     });
-  };
-
-  onChangeText = (e) => {
-    console.log(e.target.value);
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  convertToRaw = () => {
-    const { editorState } = this.state;
-    console.log(convertToRaw(editorState.getCurrentContent()));
-    const contentState = editorState.getCurrentContent();
-    const raw = convertToRaw(contentState);
-
-    return JSON.stringify(raw, null, 2);
   };
 
   SaveTxtFile = () => {
@@ -87,7 +63,7 @@ class NewEditor extends Component {
     this.props.SaveFile(file);
     element.href = URL.createObjectURL(file);
     element.download = 'myFile.txt';
-    document.body.appendChild(element); // Required for this to work in FireFox
+    document.body.appendChild(element);
     element.click();
   };
 

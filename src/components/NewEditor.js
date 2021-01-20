@@ -198,9 +198,9 @@ class NewEditor extends Component {
             <em>Strike through</em>
           </button>
         </div>
+
         <div className="editorComp">
           <Editor
-            // id="show-text"
             customStyleMap={styleMap}
             editorState={this.state.editorState}
             onChange={this.onChange}

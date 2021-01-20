@@ -9,6 +9,31 @@ import {
   RichUtils,
 } from 'draft-js';
 
+const styleMap = {
+  HIGHLIGHT: {
+    backgroundColor: '#faed27',
+  },
+  STRIKETHROUGH: {
+    textDecoration: 'line-through',
+  },
+  HEADER1: {
+    fontFamily: '"Times New Roman"',
+    fontSize: 32,
+  },
+  HEADER2: {
+    fontFamily: '"Times New Roman"',
+    fontSize: 24,
+  },
+  HEADER3: {
+    fontFamily: '"Times New Roman"',
+    fontSize: 18,
+  },
+  HEADER4: {
+    fontFamily: '"Times New Roman"',
+    fontSize: 16,
+  },
+};
+
 class NewEditor extends Component {
   constructor(props) {
     super(props);
@@ -79,6 +104,48 @@ class NewEditor extends Component {
     return 'not-handled';
   };
 
+  onHeader1 = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'HEADER1')
+    );
+  };
+  onHeader2 = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'HEADER2')
+    );
+  };
+  onHeader3 = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'HEADER3')
+    );
+  };
+  onHeader4 = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'HEADER4')
+    );
+  };
+  onOrderedList = () => {
+    this.onChange(
+      RichUtils.toggleBlockType(this.state.editorState, 'ordered-list-item')
+    );
+  };
+  onUnorderedList = () => {
+    this.onChange(
+      RichUtils.toggleBlockType(this.state.editorState, 'unordered-list-item')
+    );
+  };
+
+  onStrikeThrough = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'STRIKETHROUGH')
+    );
+  };
+  onHighlight = () => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, 'HIGHLIGHT')
+    );
+  };
+
   onUnderlineClick = () => {
     this.onChange(
       RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE')
@@ -99,17 +166,42 @@ class NewEditor extends Component {
     return (
       <div className="main">
         <div className="editorChoice">
-          <button onClick={this.onUnderlineClick}>U</button>
+          <button onClick={this.onHeader1}>
+            <em>H1</em>
+          </button>
+          <button onClick={this.onHeader2}>
+            <em>H2</em>
+          </button>
+          <button onClick={this.onHeader3}>
+            <em>H3</em>
+          </button>
+          <button onClick={this.onHeader4}>
+            <em>H4</em>
+          </button>
+          <button onClick={this.onUnorderedList}>
+            <em>UL</em>
+          </button>
+          <button onClick={this.onOrderedList}>
+            <em>OL</em>
+          </button>
+          <button onClick={this.onUnderlineClick}>Underline</button>
           <button onClick={this.onBoldClick}>
-            <b>B</b>
+            <b>Bold</b>
           </button>
           <button onClick={this.onItalicClick}>
-            <em>I</em>
+            <em>Italic</em>
+          </button>
+          <button onClick={this.onHighlight}>
+            <em>Highlight</em>
+          </button>
+          <button onClick={this.onStrikeThrough}>
+            <em>Strike through</em>
           </button>
         </div>
         <div className="editorComp">
           <Editor
             // id="show-text"
+            customStyleMap={styleMap}
             editorState={this.state.editorState}
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}

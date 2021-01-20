@@ -16,10 +16,19 @@ h4 {
 
 .editorChoice {
   display: flex;
+  align-items: center;
   justify-content: space-around;
   margin-top: 25vh;
   margin-bottom: 20px;
-  width: 100px;
+  width: 800px;
+  height: 50px;
+  border-bottom: 2px solid gray;
+  /* border: solid red; */
+}
+.editorChoice > button {
+  border: none;
+  background: none;
+  color: rgb(85, 82, 82);
 }
 
 .editorComp {
